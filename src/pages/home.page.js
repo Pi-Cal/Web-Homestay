@@ -1,121 +1,115 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Container, Image, Row, Col } from 'react-bootstrap';
-import { OnlySearchBar } from '../components/header/search.component';
-import { useNavigate, createSearchParams, generatePath } from 'react-router-dom';
-import Layout from '../components/layout.component';
-import { SearchContext } from '../context/searchContext';
+import React, { useContext, useEffect, useState } from "react";
+import { Container, Image, Col, ButtonGroup, Button } from "react-bootstrap";
+import {
+  useNavigate,
+  createSearchParams,
+  generatePath,
+} from "react-router-dom";
+import Layout from "../components/layout.component";
+import { SearchContext } from "../context/searchContext";
 import "./home.css";
-import {InView} from 'react-intersection-observer';
-import { animated, useSpring } from 'react-spring';
+import { animated, useSpring } from "react-spring";
+import { Signup } from "./signUp.page";
+import LoginModal from "../components/header/login.component";
+import { NotificationContext } from "../context/notificationContext";
 
 const HomePage = () => {
-    const {setOnViewport} = useContext(SearchContext);
+  const { setOnViewport } = useContext(SearchContext);
 
-    const handleInView = (inView) => {
-        setOnViewport(inView)
-    }
+  useEffect(() => {
+    setOnViewport(true);
+    return () => {
+      setOnViewport(false);
+    };
+  }, []);
 
-    useEffect(() => {
-        setOnViewport(true);
-        return () => {
-            setOnViewport(false);
-        }
-    },[])
+  const [isLoginModal, setLoginModal] = useState(false);
+  const [isSignupModal, setSignupModal] = useState(false);
+  const [isForgot, setForgot] = useState(false);
 
-    return (
-        <Layout containerStyleName=''>
-            <Row className='bg-dark pt-3 w-100 gx-0 d-flex justify-content-center pb-5 align-items-center home-image-container'>
-                <InView as="div" onChange={handleInView}>
-                    <div className=''></div>
-                </InView>
-                <Col md='10' className='mt-3 mb-3 d-flex justify-content-center'>
-                    {
-                        <OnlySearchBar id='home-search-bar'/>
-                    }
-                </Col>
-                <div id='home-introduce' className='d-flex justify-content-center mb-5'>
-                    <Image className="mt-3" src="hoian-2.jpg" id="home-img" alt='.'/>
-                    <div id='home-introduce-text' className='text-white position-absolute d-flex flex-column justify-content-center align-items-center'>
-                        <div id='introduce-title' className='text-center'>Bạn chưa biết đi đâu?</div>
-                        <div id='introduce-sub' className='text-center'>Hãy cùng nhau khám phá những nơi bạn chưa từng đặt chân tới</div>
-                    </div>
-                </div>
-            </Row>
+  const [isToast, setToast] = useState(false);
+  const [toastNoti, setToastNoti] = useState(null);
+  const [newNotiCount, setNewNotiCount] = useState(0);
 
-            <Container className='mt-5 pt-1 mb-5'>
-                <Row className='mt-3 mb-5 '><h2 id='hint'>Một số gợi ý của chúng tôi dành cho bạn</h2></Row>
-                <Row>
-                    <PlaceCard colorVariant="warning" imageSrc="hanoi-2.jpg" place="Hà Nội" latitude={21.028195403} longitude={105.854159778}/>
-                    <PlaceCard colorVariant="info" imageSrc="halong-2.jpg" place="Hạ Long" latitude={20.9492078640001} longitude={107.074284282} />
-                    <PlaceCard colorVariant="danger" imageSrc="sapa-2.jpg" place="Sa Pa" latitude={22.3331296700001} longitude={103.840040452} />
-                    <PlaceCard colorVariant="success" imageSrc="ninhbinh-2.jpg" place="Ninh Bình" latitude={20.2584345220001} longitude={105.976350094} />
-                </Row>
-            </Container>
-        </Layout>
-    )
-}
+  const navigate = useNavigate();
 
-const PlaceCard = ({colorVariant, imageSrc, place, latitude, longitude}) => {
+  const { socket } = useContext(NotificationContext);
+  const userState = JSON.parse(localStorage.getItem("user-state"));
 
-    const [onHover, setHover] = useState(false);
+  const handleLoginToast = () => {
+    setToastNoti("Đăng nhập thành công");
+    setToast(true);
+  };
 
-    const cardStyles = useSpring({
-        config:{duration: 300},
-        
-        from: {
-            scale: onHover ? 1 : 1.05,
-            boxShadow: onHover ? '0px 0px 0px grey' : '0px 0px 20px grey',
-            zIndex: onHover ? 0 : 5
-        },
-        to: {
-            scale: onHover ? 1.05 : 1,
-            boxShadow: onHover ? '0px 0px 20px grey' : '0px 0px 0px grey',
-            zIndex: onHover ? 5 : 0
-        }
-    })
+  const handleSignupToast = () => {
+    setToastNoti("Đăng ký thành công");
+    setToast(true);
+  };
 
-    const navigate = useNavigate();
-    const handleClick = () => {
-        const body = {
-            description: place,
-            begin_date: null,
-            end_date: null,
-            latitude: latitude,
-            longitude: longitude,
-            num_guest: 0,
-            radius: 20
-        }
-        localStorage.setItem("search", JSON.stringify(body));
-        const path = generatePath("/search?:query", {
-            query: createSearchParams({...body})
-        })
-        navigate(path);
-    }
-    return (
-        <Col lg="3" sm="6" className='d-flex justify-content-center'
-        >
-            <animated.div
-                style={{...cardStyles}}
-            >
-                <div className={`cardContainer bg-${colorVariant}`} onClick={handleClick}
-                 onMouseEnter={()=>setHover(true)}
-                 onMouseLeave={()=>setHover(false)}
-                >
-                    <div className="cardMain">
-                        <div className="cardImg">
-                            <Image src={imageSrc} className="" />
-                        </div>
-                        <div className="info ps-3 pt-3">
-                            <h2>{place}</h2>
-                        </div>
-                    </div>
-                </div>
-            </animated.div>
-        </Col>
+  useEffect(() => {
+    if (!userState) return;
+    let isActive = true;
+    console.log(socket);
+    socket.on("receive_rental", (content, sendDate) => {
+      if (isActive) {
+        const exposedContent = content.split("|")[0];
+        setToastNoti(exposedContent);
+        setToast(true);
+        setNewNotiCount((prevCount) => prevCount + 1);
+      }
+    });
+    socket.on("receive_feedback", (content, sendDate) => {
+      if (isActive) {
+        const exposedContent = content.split("|")[0];
+        setToastNoti(exposedContent);
+        setToast(true);
+        setNewNotiCount((prevCount) => prevCount + 1);
+      }
+    });
+    socket.on("receive_room", (content, sendDate) => {
+      if (isActive) {
+        const exposedContent = content.split("|")[0];
+        setToastNoti(exposedContent);
+        setToast(true);
+        setNewNotiCount((prevCount) => prevCount + 1);
+      }
+    });
+    return () => {
+      isActive = false;
+      socket.off("receive_rental");
+      socket.off("receive_feedback");
+    };
+  }, []);
 
-    )
-}
+  return (
+    <Layout containerStyleName="">
+      <Container className="mt-5 vh-100 d-flex justify-content-center align-items-center bg-success">
+        {!userState ? (
+          <ButtonGroup>
+            <Button onClick={() => setLoginModal(true)} className="me-5">
+              Đăng nhập
+            </Button>
+            <Button onClick={() => setSignupModal(true)}>Đăng ký</Button>
+          </ButtonGroup>
+        ) : (
+          <Button onClick={() => navigate(`/roommanager`)}>
+            Quản lý phòng
+          </Button>
+        )}
+
+        <Signup
+          show={isSignupModal}
+          onHide={() => setSignupModal(false)}
+          displaySuccessToast={handleSignupToast}
+        />
+        <LoginModal
+          show={isLoginModal}
+          onHide={() => setLoginModal(false)}
+          displaySuccessToast={handleLoginToast}
+        />
+      </Container>
+    </Layout>
+  );
+};
 
 export default HomePage;
-
-  

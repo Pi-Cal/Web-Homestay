@@ -8,18 +8,18 @@ import { NumField } from "../components/forms/NumField";
 import { RoomContext } from "../context/roomContext";
 import { useNavigate, useLocation } from "react-router";
 import { Button, Row, ProgressBar, Col } from "react-bootstrap";
-import './roomSignup.page.css';
-import { useSpring, animated } from 'react-spring'
+import "./roomSignup.page.css";
+import { useSpring, animated } from "react-spring";
 import { ImageForm } from "../components/forms/ImageForm";
 import MapField from "../components/forms/MapField";
 import HostLayout from "../components/hostlayout.component";
 export const RoomSignUp = () => {
-  const { roomType, roomFacility, createRoom, updateRoom } = useContext(RoomContext);
+  const { roomType, roomFacility, createRoom, updateRoom } =
+    useContext(RoomContext);
 
   const [isGetting, setGetting] = useState(false);
 
-  const userState = JSON.parse(localStorage.getItem('user-state'));
-
+  const userState = JSON.parse(localStorage.getItem("user-state"));
 
   const navigate = useNavigate();
 
@@ -30,51 +30,53 @@ export const RoomSignUp = () => {
     stateRoom = location.state.stateRoom;
   }
 
-
-
-
   const onSubmit = async (room) => {
-    let {image_upload, location, ...tempRoom} = room;
+    let { image_upload, location, ...tempRoom } = room;
     let cloneRoom = {
       ...tempRoom,
       room_type_id: parseInt(tempRoom.room_type_id),
       latitude: location.latitude,
-      longitude: location.longitude
-    }
+      longitude: location.longitude,
+    };
     const requestCreateRoom = async () => {
       if (!stateRoom) {
         await createRoom(userState.token, cloneRoom)
-          .then(res => console.log(res))
-          .catch(err => console.log(err))
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
       } else {
         await updateRoom(userState.token, cloneRoom)
-          .then(res => console.log(res))
-          .catch(err => console.log(err))
+          .then((res) => console.log(res))
+          .catch((err) => console.log(err));
       }
-    }
-    
+    };
+
     requestCreateRoom();
-    navigate("/host/roommanager");
+    navigate("/roommanager");
   };
 
-
-  const initialValue = stateRoom ? stateRoom : {
-    room_name: "",
-    room_type_id: 1,
-    facilities: [],
-    images: [],
-    rule: '',
-    num_guest: 1,
-    num_bed: 1,
-    num_bedroom: 1,
-    num_bathroom: 1,
-    price: 23012.13,
-    location: null
-  };
+  const initialValue = stateRoom
+    ? stateRoom
+    : {
+        room_name: "",
+        room_type_id: 1,
+        facilities: [],
+        images: [],
+        rule: "",
+        num_guest: 1,
+        num_bed: 1,
+        num_bedroom: 1,
+        num_bathroom: 1,
+        price: 23012.13,
+        location: null,
+      };
 
   return (
     <HostLayout>
-      <FormikStepper initialValues={initialValue} onSubmit={onSubmit} isGetting={isGetting}>
+      <FormikStepper
+        initialValues={initialValue}
+        onSubmit={onSubmit}
+        isGetting={isGetting}
+      >
         <Form>
           <FormikStep
             validationSchema={Yup.object({
@@ -82,19 +84,20 @@ export const RoomSignUp = () => {
             })}
             className="room-name-field"
           >
-            <TextField label = "Tên phòng" name="room_name" type="text" pos="col-8" />
+            <TextField
+              label="Tên phòng"
+              name="room_name"
+              type="text"
+              pos="col-8"
+            />
           </FormikStep>
           <FormikStep
             validationSchema={Yup.object({
               room_type_id: Yup.number().min(1, "Bạn chưa chọn loại phòng"),
             })}
-            className = "room-type-field"
+            className="room-type-field"
           >
-            <SelectButton
-              name="room_type_id"
-              options={roomType}
-              pos="col-8"
-            />
+            <SelectButton name="room_type_id" options={roomType} pos="col-8" />
           </FormikStep>
           <FormikStep
             validationSchema={Yup.object({
@@ -147,23 +150,22 @@ export const RoomSignUp = () => {
             />
           </FormikStep>
           <FormikStep className="room-facility-field">
-            <MultiSelect
-              name="facilities"
-              options={roomFacility}
-            />
+            <MultiSelect name="facilities" options={roomFacility} />
           </FormikStep>
           <FormikStep className="room-location">
             <MapField name="location" />
           </FormikStep>
-          <FormikStep
-            className="room-rule-field"
-          >
-            <TextField label = "Quy tắc" name="rule" type="textarea" pos="col-8" style={{ height: '100px' }}/>
+          <FormikStep className="room-rule-field">
+            <TextField
+              label="Quy tắc"
+              name="rule"
+              type="textarea"
+              pos="col-8"
+              style={{ height: "100px" }}
+            />
           </FormikStep>
-          <FormikStep
-            className="room-images"
-          >
-            <ImageForm 
+          <FormikStep className="room-images">
+            <ImageForm
               label="Ảnh"
               name="images"
               type="file"
@@ -172,7 +174,7 @@ export const RoomSignUp = () => {
               isGetting={isGetting}
             />
           </FormikStep>
-          
+
           <FormikStep
             validationSchema={Yup.object({
               price: Yup.number()
@@ -190,15 +192,17 @@ export const RoomSignUp = () => {
                   }
                 ),
             })}
-            className = "room-price-field"
+            className="room-price-field"
           >
-            <div className = "price-group">
-            <NumField
-              name="price"
-              type="number"
-              pos="col-md-12 price-input"
-            />
-            <div className="price-description"><span>đ</span> mỗi đêm</div>
+            <div className="price-group">
+              <NumField
+                name="price"
+                type="number"
+                pos="col-md-12 price-input"
+              />
+              <div className="price-description">
+                <span>đ</span> mỗi đêm
+              </div>
             </div>
           </FormikStep>
         </Form>
@@ -209,13 +213,17 @@ export const RoomSignUp = () => {
 
 export const FormikStep = ({ children }) => {
   const styleAnimate = useSpring({
-    from: {opacity: 0, y: 100},
-    to: {opacity: 1, y: 0}
-  })
-  return <animated.div style={styleAnimate} className="input-wrap">{children}</animated.div>;
+    from: { opacity: 0, y: 100 },
+    to: { opacity: 1, y: 0 },
+  });
+  return (
+    <animated.div style={styleAnimate} className="input-wrap">
+      {children}
+    </animated.div>
+  );
 };
 
-export const FormikStepper = ({ children, isGetting,...props }) => {
+export const FormikStepper = ({ children, isGetting, ...props }) => {
   const childrenArray = React.Children.toArray(children.props.children);
 
   const [step, setStep] = useState(0);
@@ -224,73 +232,86 @@ export const FormikStepper = ({ children, isGetting,...props }) => {
   function isLastStep() {
     return step === childrenArray.length - 1;
   }
-  
+
   const styleAnimate = useSpring({
-    from: {opacity: 0, y: 100},
-    to: {opacity: 1, y: 0}
-  })
+    from: { opacity: 0, y: 100 },
+    to: { opacity: 1, y: 0 },
+  });
 
   function getTitle(classNam) {
-    switch(classNam) {
-      case 'room-name-field':
-        return "Đầu tiên, hãy đặt tên cho chỗ ở của bạn"
-      case 'room-type-field':
-        return 'Khách sẽ được sử dụng loại chỗ ở nào?'
-      case 'number-contain-field':
-        return 'Bạn muốn đón bao nhiêu khách?'
-      case 'room-facility-field':
-        return 'Cho khách biết chỗ ở của bạn có những gì'
-      case 'room-price-field':
-        return 'Bây giờ đến phần thú vị rồi - đặt giá cho thuê'
-      case 'room-images':
-        return 'Hãy đăng một số ảnh để khách tham quan có thể tham khảo nào'
-      case 'room-rule-field':
-        return 'Những điều bạn muốn khách hàng của mình tuân thủ là gì?'
-      case 'room-location':
-        return "Thêm vị trí bằng cách tìm kiếm thành phố và điều chỉnh Marker"
+    switch (classNam) {
+      case "room-name-field":
+        return "Đầu tiên, hãy đặt tên cho chỗ ở của bạn";
+      case "room-type-field":
+        return "Khách sẽ được sử dụng loại chỗ ở nào?";
+      case "number-contain-field":
+        return "Bạn muốn đón bao nhiêu khách?";
+      case "room-facility-field":
+        return "Cho khách biết chỗ ở của bạn có những gì";
+      case "room-price-field":
+        return "Bây giờ đến phần thú vị rồi - đặt giá cho thuê";
+      case "room-images":
+        return "Hãy đăng một số ảnh để khách tham quan có thể tham khảo nào";
+      case "room-rule-field":
+        return "Những điều bạn muốn khách hàng của mình tuân thủ là gì?";
+      case "room-location":
+        return "Thêm vị trí bằng cách tìm kiếm thành phố và điều chỉnh Marker";
       default:
         return "Đăng ký phòng";
     }
   }
 
   return (
-      <Formik
-        {...props}
-        validationSchema={currentChild.props.validationSchema}
-        onSubmit={async (values, helper) => {
-          if (isLastStep()) {
-            await props.onSubmit(values, helper);
-          } else {
-            setStep((s) => s + 1);
-          }
-        }}
-      >
-        <Form>
-          <Row className="input-step w-100 mt-2">
-            <Col md='6' sm='0' className="label-field">
-              <animated.div style={styleAnimate}><div className="title ps-4">{getTitle(currentChild.props.className)}</div></animated.div>
-            </Col>
-            <Col md='6' sm='12' className="input-field">
-              <div className = "input-row">{currentChild}</div>
-              <ProgressBar animated now={Math.floor((step+1) /(childrenArray.length) * 100)} variant="dark"/>
-              <div md="12" className="button-row">
-                {step > 0 ? (
-                  <Button
-                    onClick={() => setStep((s) => s - 1)}
-                    variant="outline-secondary "
-                    className="pre"
-                    disabled={isGetting}
-                  >
-                    Quay lại
-                  </Button>
-                ) : null}
-                <Button type="submit" variant="outline-success" className="next" disabled={isGetting}>
-                  {!isLastStep() ? "Tiếp theo" : "Hoàn tất"}
-                </Button>
+    <Formik
+      {...props}
+      validationSchema={currentChild.props.validationSchema}
+      onSubmit={async (values, helper) => {
+        if (isLastStep()) {
+          await props.onSubmit(values, helper);
+        } else {
+          setStep((s) => s + 1);
+        }
+      }}
+    >
+      <Form>
+        <Row className="input-step w-100 mt-2">
+          <Col md="6" sm="0" className="label-field">
+            <animated.div style={styleAnimate}>
+              <div className="title ps-4">
+                {getTitle(currentChild.props.className)}
               </div>
-            </Col>
-          </Row>
-        </Form>
-      </Formik>
+            </animated.div>
+          </Col>
+          <Col md="6" sm="12" className="input-field">
+            <div className="input-row">{currentChild}</div>
+            <ProgressBar
+              animated
+              now={Math.floor(((step + 1) / childrenArray.length) * 100)}
+              variant="dark"
+            />
+            <div md="12" className="button-row">
+              {step > 0 ? (
+                <Button
+                  onClick={() => setStep((s) => s - 1)}
+                  variant="outline-secondary "
+                  className="pre"
+                  disabled={isGetting}
+                >
+                  Quay lại
+                </Button>
+              ) : null}
+              <Button
+                type="submit"
+                variant="outline-success"
+                className="next"
+                disabled={isGetting}
+              >
+                {!isLastStep() ? "Tiếp theo" : "Hoàn tất"}
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Form>
+    </Formik>
   );
 };
