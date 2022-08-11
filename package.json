@@ -1,7 +1,6 @@
 {
   "name": "homestay",
   "version": "0.1.0",
-  "homepage": "http://wehomeapp.tk/",
   "private": true,
   "dependencies": {
     "@react-google-maps/api": "^2.7.0",

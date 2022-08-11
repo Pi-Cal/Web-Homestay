@@ -16,10 +16,7 @@ export const Footer = ({isShow=true}) => {
                         <div className='footer-container ps-1'>
                             <div className="footer-title mb-3">Đội ngũ phát triển</div>
                             <div className='text-name'>Nguyễn Ngọc Thạch</div>
-                            <div className='text-name'>Đào Trọng Tuấn</div>
-                            <div className='text-name'>Phạm Văn Trọng</div>
                             <div className='text-name'>Nguyễn Phú Quốc</div>
-                            <div className='text-name'>Hồ Mạnh Tân</div>
                         </div>
                     </Col>
                     <Col md={5} className='d-none d-md-block web-logo'>
