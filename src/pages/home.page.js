@@ -1,14 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useEffect, useState } from "react";
-import { Container, Image, Col, ButtonGroup, Button } from "react-bootstrap";
-import {
-  useNavigate,
-  createSearchParams,
-  generatePath,
-} from "react-router-dom";
+import { Container, ButtonGroup, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Layout from "../components/layout.component";
 import { SearchContext } from "../context/searchContext";
 import "./home.css";
-import { animated, useSpring } from "react-spring";
 import { Signup } from "./signUp.page";
 import LoginModal from "../components/header/login.component";
 import { NotificationContext } from "../context/notificationContext";
@@ -25,11 +21,10 @@ const HomePage = () => {
 
   const [isLoginModal, setLoginModal] = useState(false);
   const [isSignupModal, setSignupModal] = useState(false);
-  const [isForgot, setForgot] = useState(false);
 
-  const [isToast, setToast] = useState(false);
-  const [toastNoti, setToastNoti] = useState(null);
-  const [newNotiCount, setNewNotiCount] = useState(0);
+  const [, setToast] = useState(false);
+  const [, setToastNoti] = useState(null);
+  const [, setNewNotiCount] = useState(0);
 
   const navigate = useNavigate();
 

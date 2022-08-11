@@ -19,7 +19,6 @@
 .view-type-btn-choosen {
   cursor: pointer;
   text-align: center;
-  border: 1px solid black;
   outline: none;
   padding: 0px;
   margin: 0px;
@@ -33,7 +32,6 @@
   padding-right: 20px;
   font-size: 14px;
   line-height: 18px;
-  background-color: #f7f7f7;
   color: #222222;
   border-color: #222222;
   font-weight: bolder;
@@ -42,7 +40,6 @@
 .view-type-btn {
   cursor: pointer;
   text-align: center;
-  border: 1px solid black;
   background-color: #ffffff;
   outline: none;
   padding: 0px;

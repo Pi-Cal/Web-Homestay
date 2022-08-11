@@ -1,12 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import HomePage from "../pages/home.page";
 import { RoomSignUp } from "../pages/roomSignUp.page";
 import { RoomManager } from "../pages/roomManager.page";
-import { AccountSettings } from "../pages/accountSetting.page";
-import SearchResultPage from "../pages/searchResult.page";
-import RoomViewPage from "../pages/roomView.page";
-import RentalViewPage from "../pages/rentalView.page";
-import FavoritePage from "../pages/favorite.page";
 import { RentalManagement } from "../pages/rentalManagement.page";
 import { AdminPage } from "../admin/admin.page";
 import { Wrapper } from "../scrollToTop";
